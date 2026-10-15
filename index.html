@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Setorial GEPAS · Análise Comparativa de Demandas</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<style>
+/* ============================================================
+   PALETA "FOREST & MINT"
+   ============================================================ */
+:root{
+  --petrol:      #1b4332;
+  --forest:      #2d6a4f;
+  --emerald:     #40916c;
+  --leaf:        #52b788;
+  --mint-mid:    #95d5b2;
+  --mint:        #b7e4c7;
+  --mint-soft:   #d8f3dc;
+  --mint-bg:     #f3f8f4;
+
+  --ink:         #0f2419;
+  --ink-soft:    #3a5a48;
+  --muted:       #6b8a79;
+  --line:        #e3efe7;
+  --card:        #ffffff;
+
+  --up:          #2d6a4f;
+  --up-bg:       #d8f3dc;
+  --down:        #b23a34;
+  --down-bg:     #fbe6e4;
+  --flat:        #6b8a79;
+  --flat-bg:     #eef3f0;
+
+  --radius:      18px;
+  --radius-sm:   12px;
+  --shadow:      0 4px 20px rgba(27,67,50,.07);
+  --shadow-lg:   0 12px 36px rgba(27,67,50,.13);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--mint-bg);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:56px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header{
+  position:relative;
+  background:linear-gradient(125deg,#142f23 0%,var(--petrol) 38%,var(--forest) 78%,var(--emerald) 130%);
+  color:#fff;
+  padding:44px 40px 88px;
+  overflow:hidden;
+}
+.header::before{
+  content:'';
+  position:absolute;
+  width:520px;height:520px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(149,213,178,.22),transparent 68%);
+  top:-260px;right:-140px;
+}
+.header::after{
+  content:'';
+  position:absolute;
+  width:340px;height:340px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(216,243,220,.14),transparent 70%);
+  bottom:-200px;left:-90px;
+}
+.header-inner{
+  position:relative;
+  z-index:2;
+  max-width:1440px;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  gap:28px;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+.header-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(216,243,220,.15);
+  border:1px solid rgba(216,243,220,.28);
+  color:var(--mint-soft);
+  font-size:11.5px;
+  font-weight:600;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  padding:7px 15px;
+  border-radius:100px;
+  margin-bottom:18px;
+  backdrop-filter:blur(4px);
+}
+.header-eyebrow svg{width:14px;height:14px}
+.header h1{
+  font-size:clamp(26px,3.4vw,40px);
+  font-weight:800;
+  letter-spacing:-.025em;
+  line-height:1.15;
+  margin-bottom:12px;
+}
+.header h1 span{
+  background:linear-gradient(90deg,var(--mint),var(--mint-mid));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.header p{
+  font-size:15px;
+  color:rgba(216,243,220,.82);
+  max-width:640px;
+  font-weight:400;
+}
+.header-period{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(216,243,220,.22);
+  border-radius:var(--radius);
+  padding:16px 22px;
+  backdrop-filter:blur(8px);
+  flex-shrink:0;
+}
+.header-period .hp-icon{
+  width:42px;height:42px;
+  border-radius:12px;
+  background:rgba(216,243,220,.16);
+  display:grid;place-items:center;
+  color:var(--mint);
+}
+.header-period .hp-label{
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  color:rgba(216,243,220,.68);
+  font-weight:600;
+}
+.header-period .hp-value{
+  font-size:16.5px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:-.01em;
+}
+.header-period .hp-value em{
+  font-style:normal;
+  color:var(--mint-mid);
+  margin:0 4px;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container{
+  max-width:1440px;
+  margin:-58px auto 0;
+  padding:0 40px;
+  position:relative;
+  z-index:5;
+}
+.section{margin-bottom:44px}
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.section-head h2{
+  font-size:19px;
+  font-weight:700;
+  letter-spacing:-.015em;
+  color:var(--petrol);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-head h2 svg{width:19px;height:19px;color:var(--emerald)}
+.section-head .rule{
+  flex:1;height:1px;
+  background:linear-gradient(90deg,var(--line),transparent);
+  min-width:30px;
+}
+.section-head .hint{
+  font-size:12.5px;color:var(--muted);font-weight:500;
+}
+
+/* ============================================================
+   KPI CARDS
+   ============================================================ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.kpi{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:22px 22px 20px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(227,239,231,.9);
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.kpi::after{
+  content:'';position:absolute;inset:0 0 auto 0;height:3px;
+  background:linear-gradient(90deg,var(--emerald),var(--mint-mid));
+  opacity:.85;
+}
+.kpi.accent{
+  background:linear-gradient(140deg,var(--petrol),var(--forest));
+  border-color:transparent;color:#fff;
+}
+.kpi.accent::after{background:linear-gradient(90deg,var(--mint),var(--leaf))}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.kpi-icon{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  background:var(--mint-soft);color:var(--forest);
+}
+.kpi-icon svg{width:19px;height:19px}
+.kpi.accent .kpi-icon{background:rgba(216,243,220,.17);color:var(--mint)}
+.kpi-chip{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.02em;
+}
+.kpi-chip.up{background:var(--up-bg);color:var(--up)}
+.kpi-chip.down{background:var(--down-bg);color:var(--down)}
+.kpi.accent .kpi-chip{background:rgba(216,243,220,.2);color:var(--mint)}
+.kpi-label{
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);margin-bottom:6px;
+}
+.kpi.accent .kpi-label{color:rgba(216,243,220,.72)}
+.kpi-value{
+  font-size:34px;font-weight:800;letter-spacing:-.035em;line-height:1.1;color:var(--petrol);
+}
+.kpi.accent .kpi-value{color:#fff}
+.kpi-value small{font-size:15px;font-weight:600;color:var(--muted);margin-left:2px}
+.kpi.accent .kpi-value small{color:rgba(216,243,220,.7)}
+.kpi-sub{font-size:12.5px;color:var(--muted);margin-top:8px;font-weight:500}
+.kpi.accent .kpi-sub{color:rgba(216,243,220,.75)}
+.kpi-bar{
+  height:5px;border-radius:100px;background:var(--mint-soft);margin-top:14px;overflow:hidden;
+}
+.kpi-bar i{
+  display:block;height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--forest),var(--leaf));
+}
+.kpi.accent .kpi-bar{background:rgba(216,243,220,.18)}
+.kpi.accent .kpi-bar i{background:linear-gradient(90deg,var(--mint),var(--leaf))}
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+.charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:22px 24px 20px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(227,239,231,.9);
+}
+.card.span-2{grid-column:span 2}
+.card-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px;
+}
+.card-title{font-size:14.5px;font-weight:700;color:var(--petrol);letter-spacing:-.01em}
+.card-desc{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
+.card-badge{
+  font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border-radius:100px;background:var(--mint-soft);color:var(--forest);white-space:nowrap;
+}
+.chart-box{position:relative;height:290px}
+.chart-box.tall{height:340px}
+.chart-box.short{height:250px}
+
+/* ============================================================
+   DETALHAMENTO CAUSAS TOP 5 (por decisão)
+   ============================================================ */
+.causas-detalhe{
+  margin-top:26px;
+  padding-top:22px;
+  border-top:1px dashed var(--mint-mid);
+}
+.causas-detalhe-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:16px;
+}
+.causas-detalhe-head h3{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--petrol);
+  letter-spacing:-.005em;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.causas-detalhe-head h3 svg{width:16px;height:16px;color:var(--emerald)}
+.causas-detalhe-head .sub{
+  font-size:11.5px;
+  color:var(--muted);
+  font-weight:500;
+}
+.causas-detalhe-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.causas-mes{
+  background:#fafdfb;
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+}
+.causas-mes-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 16px;
+  background:linear-gradient(90deg, var(--petrol) 0%, var(--forest) 100%);
+  color:#fff;
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+}
+.causas-mes-title .total{
+  font-size:11px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:100px;
+  background:rgba(216,243,220,.2);
+  color:var(--mint);
+}
+.causas-mes table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:12px;
+  min-width:0;
+}
+.causas-mes thead th{
+  background:#eef6f0;
+  color:var(--forest);
+  font-size:9.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  padding:8px 10px;
+  text-align:right;
+  white-space:nowrap;
+  border-bottom:1px solid var(--mint-soft);
+}
+.causas-mes thead th:first-child{
+  text-align:left;
+  border-radius:0;
+}
+.causas-mes tbody td{
+  padding:9px 10px;
+  border-bottom:1px solid var(--line);
+  text-align:right;
+  font-weight:600;
+  color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;
+}
+.causas-mes tbody tr:last-child td{border-bottom:none}
+.causas-mes tbody td:first-child{
+  text-align:left;
+  font-weight:600;
+  color:var(--petrol);
+  font-size:11px;
+  line-height:1.3;
+}
+.causas-mes tbody tr:hover{background:#f4faf6}
+.causas-mes .col-proc{color:var(--forest);font-weight:700}
+.causas-mes .col-improc{color:var(--down);font-weight:700}
+.causas-mes .col-parc{color:#96660f;font-weight:700}
+.causas-mes .col-qtd{color:var(--petrol);font-weight:800}
+.causas-mes .vazio{color:#c2cec7;font-weight:500}
+
+@media (max-width:900px){
+  .causas-detalhe-grid{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   PLANOS (barras CSS)
+   ============================================================ */
+.planos{display:flex;flex-direction:column;gap:16px;padding-top:4px}
+.plano-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:10px}
+.plano-name{font-size:12.5px;font-weight:600;color:var(--ink-soft);letter-spacing:.01em}
+.plano-qty{font-size:14px;font-weight:800;color:var(--petrol)}
+.plano-qty small{font-size:11px;font-weight:600;color:var(--muted);margin-left:4px}
+.plano-track{height:9px;border-radius:100px;background:var(--mint-bg);overflow:hidden}
+.plano-fill{
+  height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--forest),var(--leaf));
+  width:0;transition:width 1.1s cubic-bezier(.22,1,.36,1);
+}
+.plano-fill.alt{background:linear-gradient(90deg,var(--emerald),var(--mint-mid))}
+
+/* ============================================================
+   TABELA COMPARATIVA (ORIGINAL)
+   ============================================================ */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{
+  font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 17px;border-radius:100px;
+  border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;
+  transition:all .2s ease;display:inline-flex;align-items:center;gap:7px;
+}
+.tab svg{width:14px;height:14px}
+.tab:hover{border-color:var(--mint-mid);background:var(--mint-bg);color:var(--forest)}
+.tab.active{
+  background:linear-gradient(135deg,var(--petrol),var(--forest));
+  border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(27,67,50,.22);
+}
+.table-wrap{overflow-x:auto;border-radius:var(--radius-sm)}
+table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;min-width:760px;
+}
+thead th{
+  background:var(--petrol);color:var(--mint-soft);font-size:10.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.09em;padding:13px 16px;text-align:left;white-space:nowrap;
+}
+thead th:first-child{border-radius:var(--radius-sm) 0 0 0}
+thead th:last-child{border-radius:0 var(--radius-sm) 0 0;text-align:center}
+thead th.num{text-align:right}
+tbody td{
+  padding:13px 16px;border-bottom:1px solid var(--line);color:var(--ink-soft);
+  font-weight:500;vertical-align:middle;
+}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background .16s ease}
+tbody tr:hover{background:#f8fcfa}
+td.item{font-weight:600;color:var(--petrol);font-size:13.5px}
+td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+td.num.m1{color:var(--muted)}
+td.num.m2{color:var(--petrol);font-weight:700}
+td.center{text-align:center}
+.delta{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-variant-numeric:tabular-nums}
+.delta.up{color:var(--up)}
+.delta.down{color:var(--down)}
+.delta.flat{color:var(--flat)}
+.delta svg{width:13px;height:13px;stroke-width:2.6}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  padding:5px 11px;border-radius:100px;letter-spacing:.02em;white-space:nowrap;
+}
+.badge svg{width:12px;height:12px;stroke-width:2.6}
+.badge.up{background:var(--up-bg);color:var(--up)}
+.badge.down{background:var(--down-bg);color:var(--down)}
+.badge.flat{background:var(--flat-bg);color:var(--flat)}
+.badge.na{background:#f4f6f5;color:#9aa9a1}
+.table-foot{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding:13px 16px;
+  background:var(--mint-bg);border-radius:var(--radius-sm);font-size:12.5px;
+  color:var(--ink-soft);font-weight:500;
+}
+.table-foot svg{width:15px;height:15px;color:var(--emerald);flex-shrink:0}
+
+/* ============================================================
+   EVOLUÇÃO MENSAL CONSOLIDADA
+   ============================================================ */
+.table-evolucao thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; text-align: right; }
+.table-evolucao tbody tr.total-row td {
+  background-color: var(--mint-soft);color: var(--petrol);font-weight: 800;
+  border-top: 2px solid var(--mint-mid);
+}
+.table-evolucao tbody tr.total-row td.num { font-weight: 800; }
+.table-evolucao td.num { text-align: right; }
+.table-evolucao th.num { text-align: right; }
+.table-evolucao .total-col {
+  background-color: #f0f9f2;color: var(--forest);font-weight: 800;
+  border-left: 2px solid var(--mint-mid);
+}
+.table-evolucao tbody tr.total-row .total-col {
+  background-color: var(--mint-mid);color: var(--petrol);font-weight: 800;
+}
+.table-evolucao .conc-col {
+  background: linear-gradient(90deg, #e8f5ec 0%, #f0f9f2 100%);
+  color: var(--forest);font-weight: 800;border-left: 2px solid var(--mint-mid);
+  font-variant-numeric: tabular-nums;
+}
+.table-evolucao tbody tr.total-row .conc-col {
+  background: linear-gradient(90deg, var(--mint) 0%, var(--mint-mid) 100%);
+  color: var(--petrol);font-weight: 800;
+}
+.table-evolucao tbody tr.row-assistencial {
+  background: linear-gradient(90deg, #f6fcf7 0%, #eef9f1 100%);position: relative;
+}
+.table-evolucao tbody tr.row-assistencial td.item {
+  color: var(--forest);font-weight: 800;position: relative;
+}
+.table-evolucao tbody tr.row-assistencial td.item::before {
+  content: '';position: absolute;left: 0;top: 12%;bottom: 12%;width: 3px;
+  border-radius: 3px;background: linear-gradient(180deg, var(--forest), var(--leaf));
+}
+.table-evolucao tbody tr.row-assistencial td { font-weight: 700;color: var(--forest); }
+.table-evolucao tbody tr.percent-row td {
+  background-color: #f7fbf8;color: var(--emerald);font-weight: 700;font-size: 12.5px;
+  border-top: 1px dashed var(--mint-mid);font-variant-numeric: tabular-nums;
+}
+.table-evolucao tbody tr.percent-row td.item { color: var(--forest);font-weight: 800;font-style: italic; }
+.table-evolucao tbody tr.percent-row .total-col {
+  background-color: var(--mint-soft);color: var(--petrol);font-weight: 800;
+}
+.table-evolucao tbody tr.percent-row .conc-col {
+  background: linear-gradient(90deg, var(--mint) 0%, var(--mint-mid) 100%);
+  color: var(--petrol);font-weight: 800;
+}
+
+/* ============================================================
+   PAINEL DE CONCENTRAÇÃO (callout)
+   ============================================================ */
+.conc-callout {
+  margin-top: 18px;display: grid;grid-template-columns: 1fr auto 1fr;gap: 0;
+  background: linear-gradient(135deg, #f6fcf7 0%, #eef9f1 100%);
+  border: 1px solid var(--mint-mid);border-radius: var(--radius);overflow: hidden;
+  box-shadow: 0 4px 16px rgba(45,106,79,.08);
+}
+.conc-side { padding: 18px 22px;display: flex;align-items: center;gap: 14px; }
+.conc-side.dominant {
+  background: linear-gradient(135deg, var(--petrol) 0%, var(--forest) 100%);color: #fff;
+}
+.conc-side.dominant .conc-icon { background: rgba(216,243,220,.2);color: var(--mint); }
+.conc-side.dominant .conc-label { color: rgba(216,243,220,.75); }
+.conc-side.dominant .conc-value { color: #fff; }
+.conc-side.dominant .conc-pct { color: var(--mint); }
+.conc-icon {
+  width: 44px;height: 44px;border-radius: 12px;display: grid;place-items: center;
+  background: var(--mint-soft);color: var(--forest);flex-shrink: 0;
+}
+.conc-icon svg { width: 22px;height: 22px; }
+.conc-body { flex: 1;min-width: 0; }
+.conc-label {
+  font-size: 10.5px;font-weight: 700;text-transform: uppercase;letter-spacing: .1em;
+  color: var(--muted);margin-bottom: 3px;
+}
+.conc-value {
+  font-size: 22px;font-weight: 800;letter-spacing: -.02em;color: var(--petrol);line-height: 1.15;
+}
+.conc-value small { font-size: 12px;font-weight: 600;color: var(--muted);margin-left: 4px; }
+.conc-side.dominant .conc-value small { color: rgba(216,243,220,.7); }
+.conc-pct { font-size: 13px;font-weight: 700;color: var(--emerald);margin-top: 2px; }
+.conc-divider {
+  display: grid;place-items: center;padding: 0 6px;color: var(--mint-mid);
+  font-size: 18px;font-weight: 800;
+}
+.conc-divider svg { width: 18px;height: 18px; }
+
+@media (max-width: 780px) {
+  .conc-callout { grid-template-columns: 1fr; }
+  .conc-divider { padding: 6px 0; }
+}
+
+/* ============================================================
+   INSIGHTS (acordeão)
+   ============================================================ */
+.insights-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-items:start}
+.insight{
+  background:var(--card);border-radius:var(--radius);
+  border:1px solid rgba(227,239,231,.9);box-shadow:var(--shadow);overflow:hidden;
+  transition:box-shadow .25s ease,border-color .25s ease;
+}
+.insight:hover{border-color:var(--mint-mid)}
+.insight.open{box-shadow:var(--shadow-lg);border-color:var(--mint)}
+.insight-head{
+  width:100%;font-family:inherit;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:13px;padding:17px 20px;text-align:left;
+}
+.insight-icon{
+  width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+  flex-shrink:0;background:var(--mint-soft);color:var(--forest);
+}
+.insight-icon svg{width:17px;height:17px}
+.insight-icon.down{background:var(--down-bg);color:var(--down)}
+.insight-icon.neutral{background:var(--flat-bg);color:var(--flat)}
+.insight-titles{flex:1;min-width:0}
+.insight-title{
+  font-size:13.5px;font-weight:700;color:var(--petrol);letter-spacing:-.005em;
+  display:block;line-height:1.3;
+}
+.insight-sub{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px;display:block}
+.insight-tag{
+  font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:100px;
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.insight-tag.up{background:var(--up-bg);color:var(--up)}
+.insight-tag.down{background:var(--down-bg);color:var(--down)}
+.insight-tag.flat{background:var(--flat-bg);color:var(--flat)}
+.insight-head .chev{
+  width:17px;height:17px;color:var(--muted);flex-shrink:0;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+.insight.open .chev{transform:rotate(180deg);color:var(--forest)}
+.insight-body{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .33s cubic-bezier(.22,1,.36,1);
+}
+.insight.open .insight-body{grid-template-rows:1fr}
+.insight-body > div{overflow:hidden}
+.insight-content{padding:0 20px 20px 69px;font-size:13px;color:var(--ink-soft);line-height:1.68}
+.insight-content p{margin-bottom:11px}
+.insight-content p:last-child{margin-bottom:0}
+.insight-content strong{color:var(--forest);font-weight:700}
+.insight-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.pill{
+  font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:5px 10px;border-radius:8px;background:var(--mint-bg);color:var(--forest);
+  border:1px solid var(--mint-soft);
+}
+.pill.warn{background:#fdf4e3;color:#96660f;border-color:#f7e6c4}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  max-width:1440px;margin:0 auto;padding:28px 40px 0;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+  gap:14px;font-size:12px;color:var(--muted);font-weight:500;
+}
+.footer strong{color:var(--forest);font-weight:700}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width:1180px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .insights-grid{grid-template-columns:1fr}
+}
+@media (max-width:900px){
+  .header{padding:34px 22px 78px}
+  .container{padding:0 22px;margin-top:-52px}
+  .footer{padding:24px 22px 0}
+  .charts-grid{grid-template-columns:1fr}
+  .card.span-2{grid-column:span 1}
+  .chart-box{height:280px}
+  .chart-box.tall{height:320px}
+}
+@media (max-width:620px){
+  .kpi-grid{grid-template-columns:1fr}
+  .header-inner{flex-direction:column}
+  .header-period{width:100%}
+  .kpi-value{font-size:30px}
+  .insight-content{padding-left:20px}
+  .card{padding:18px 16px}
+  table{font-size:12.5px}
+  thead th,tbody td{padding:11px 12px}
+}
+
+/* animação de entrada */
+@keyframes rise{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.kpi,.card,.insight{animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+.kpi:nth-child(1){animation-delay:.02s}
+.kpi:nth-child(2){animation-delay:.06s}
+.kpi:nth-child(3){animation-delay:.10s}
+.kpi:nth-child(4){animation-delay:.14s}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow">
+        <i data-lucide="shield-check"></i>
+        Relatório Setorial · GEPAS
+      </div>
+      <h1>Análise Comparativa de <span>Demandas NIP</span></h1>
+      <p>
+        Painel executivo de monitoramento das Notificações de Intervenção Preliminar (NIPs),
+        com comparativo de volume, causas, objetos, áreas demandadas e distribuição geográfica
+        entre os meses de agosto e setembro.
+      </p>
+    </div>
+    <div class="header-period">
+      <div class="hp-icon"><i data-lucide="calendar-range"></i></div>
+      <div>
+        <div class="hp-label">Período analisado</div>
+        <div class="hp-value">Agosto <em>vs.</em> Setembro</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ================= KPIs ================= -->
+  <section class="section">
+    <div class="kpi-grid">
+
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-icon"><i data-lucide="inbox"></i></div>
+          <span class="kpi-chip">Mês base</span>
+        </div>
+        <div class="kpi-label">Demanda — Agosto</div>
+        <div class="kpi-value">119 <small>NIPs</small></div>
+        <div class="kpi-sub">101 assistenciais · 18 não assistenciais</div>
+        <div class="kpi-bar"><i style="width:83.2%"></i></div>
+      </div>
+
+      <div class="kpi accent">
+        <div class="kpi-top">
+          <div class="kpi-icon"><i data-lucide="inbox-check"></i></div>
+          <span class="kpi-chip">Mês atual</span>
+        </div>
+        <div class="kpi-label">Demanda — Setembro</div>
+        <div class="kpi-value">143 <small>NIPs</small></div>
+        <div class="kpi-sub">129 assistenciais · 14 não assistenciais</div>
+        <div class="kpi-bar"><i style="width:100%"></i></div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-icon"><i data-lucide="trending-up"></i></div>
+          <span class="kpi-chip up">+24 NIPs</span>
+        </div>
+        <div class="kpi-label">Variação global</div>
+        <div class="kpi-value">+20,2<small>%</small></div>
+        <div class="kpi-sub">119 → 143 demandas no comparativo mensal</div>
+        <div class="kpi-bar"><i style="width:100%"></i></div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-icon"><i data-lucide="flame"></i></div>
+          <span class="kpi-chip up">+109,1%</span>
+        </div>
+        <div class="kpi-label">Maior crescimento</div>
+        <div class="kpi-value">Terapia</div>
+        <div class="kpi-sub">11 → 23 demandas · objeto com maior salto relativo</div>
+        <div class="kpi-bar"><i style="width:100%"></i></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CHARTS ================= -->
+  <section class="section">
+    <div class="section-head">
+      <h2><i data-lucide="bar-chart-3"></i> Visualização Gráfica</h2>
+      <span class="rule"></span>
+      <span class="hint">Comparativo Agosto × Setembro · valores e % visíveis nos gráficos</span>
+    </div>
+
+    <div class="charts-grid">
+
+      <!-- ===== CARD CAUSAS TOP 5 (com detalhamento por decisão) ===== -->
+      <div class="card span-2">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Causas Top 5 — Comparativo Mensal</div>
+            <div class="card-desc">Volume de NIPs por causa raiz, lado a lado entre os dois meses</div>
+          </div>
+          <span class="card-badge">Agosto × Setembro</span>
+        </div>
+        <div class="chart-box tall"><canvas id="chartCausas"></canvas></div>
+
+        <!-- DETALHAMENTO POR DECISÃO -->
+        <div class="causas-detalhe">
+          <div class="causas-detalhe-head">
+            <h3><i data-lucide="gavel"></i> Detalhamento - Análise Preliminar por Procedência</h3>
+            <span class="sub">Procedente · Improcedente · Parcialmente</span>
+          </div>
+
+          <div class="causas-detalhe-grid">
+
+            <!-- AGOSTO -->
+            <div class="causas-mes">
+              <div class="causas-mes-title">
+                <span>Agosto</span>
+                <span class="total">103 NIPs · Top 5</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Causa</th>
+                    <th>Qtd</th>
+                    <th>Proc.</th>
+                    <th>Improc.</th>
+                    <th>Parc.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Rol de Procedimentos</td>
+                    <td class="col-qtd">41</td>
+                    <td class="col-proc">20</td>
+                    <td class="col-improc">15</td>
+                    <td class="col-parc">6</td>
+                  </tr>
+                  <tr>
+                    <td>Regras de Acesso</td>
+                    <td class="col-qtd">18</td>
+                    <td class="col-proc">9</td>
+                    <td class="col-improc">8</td>
+                    <td class="col-parc">1</td>
+                  </tr>
+                  <tr>
+                    <td>Prazos Máximos</td>
+                    <td class="col-qtd">20</td>
+                    <td class="col-proc">14</td>
+                    <td class="col-improc">6</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                  <tr>
+                    <td>Mensalidades / Cobranças</td>
+                    <td class="col-qtd">9</td>
+                    <td class="col-proc">3</td>
+                    <td class="col-improc">5</td>
+                    <td class="col-parc">1</td>
+                  </tr>
+                  <tr>
+                    <td>Rede de Atendimento</td>
+                    <td class="col-qtd">15</td>
+                    <td class="col-proc">12</td>
+                    <td class="col-improc">3</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- SETEMBRO -->
+            <div class="causas-mes">
+              <div class="causas-mes-title">
+                <span>Setembro</span>
+                <span class="total">127 NIPs · Top 5</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Causa</th>
+                    <th>Qtd</th>
+                    <th>Proc.</th>
+                    <th>Improc.</th>
+                    <th>Parc.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Rol de Procedimentos</td>
+                    <td class="col-qtd">52</td>
+                    <td class="col-proc">17</td>
+                    <td class="col-improc">14</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                  <tr>
+                    <td>Regras de Acesso</td>
+                    <td class="col-qtd">21</td>
+                    <td class="col-proc">4</td>
+                    <td class="col-improc">8</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                  <tr>
+                    <td>Prazos Máximos</td>
+                    <td class="col-qtd">24</td>
+                    <td class="col-proc">10</td>
+                    <td class="col-improc">4</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                  <tr>
+                    <td>Mensalidades / Cobranças</td>
+                    <td class="col-qtd">9</td>
+                    <td class="col-proc">3</td>
+                    <td class="col-improc">4</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                  <tr>
+                    <td>Rede de Atendimento</td>
+                    <td class="col-qtd">21</td>
+                    <td class="col-proc">6</td>
+                    <td class="col-improc">2</td>
+                    <td class="col-parc vazio">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Rosca -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Distribuição da Demanda Atual</div>
+            <div class="card-desc">Composição por objeto — Setembro</div>
+          </div>
+          <span class="card-badge">Setembro</span>
+        </div>
+        <div class="chart-box"><canvas id="chartObjeto"></canvas></div>
+      </div>
+
+      <!-- Linha evolução -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Evolução Mensal dos NIPs</div>
+            <div class="card-desc">Série histórica Jan–Set, assistencial vs. não assistencial</div>
+          </div>
+          <span class="card-badge">Jan – Set</span>
+        </div>
+        <div class="chart-box"><canvas id="chartEvolucao"></canvas></div>
+      </div>
+
+      <!-- Áreas -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Áreas Demandadas</div>
+            <div class="card-desc">Volume por área interna — comparativo mensal</div>
+          </div>
+          <span class="card-badge">Comparativo</span>
+        </div>
+        <div class="chart-box"><canvas id="chartAreas"></canvas></div>
+      </div>
+
+      <!-- Planos -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Planos Demandados</div>
+            <div class="card-desc">Distribuição das 143 demandas de Setembro por produto</div>
+          </div>
+          <span class="card-badge">Setembro</span>
+        </div>
+        <div class="planos" id="planosList"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= EVOLUÇÃO MENSAL CONSOLIDADA ================= -->
+  <section class="section">
+    <div class="section-head">
+      <h2><i data-lucide="calendar-days"></i> Evolução Mensal Consolidada</h2>
+      <span class="rule"></span>
+      <span class="hint">Série histórica Jan–Set, total acumulado e concentração por natureza</span>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="table-evolucao">
+          <thead>
+            <tr>
+              <th>Natureza</th>
+              <th class="num">Janeiro</th>
+              <th class="num">Fevereiro</th>
+              <th class="num">Março</th>
+              <th class="num">Abril</th>
+              <th class="num">Maio</th>
+              <th class="num">Junho</th>
+              <th class="num">Julho</th>
+              <th class="num">Agosto</th>
+              <th class="num">Setembro</th>
+              <th class="num total-col">Total Ano</th>
+              <th class="num conc-col">% Concentração</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-assistencial">
+              <td class="item">ASSISTENCIAL</td>
+              <td class="num">70</td>
+              <td class="num">75</td>
+              <td class="num">89</td>
+              <td class="num">72</td>
+              <td class="num">92</td>
+              <td class="num">83</td>
+              <td class="num">116</td>
+              <td class="num">101</td>
+              <td class="num">129</td>
+              <td class="num total-col">827</td>
+              <td class="num conc-col">87,05%</td>
+            </tr>
+            <tr>
+              <td class="item">NÃO ASSISTENCIAL</td>
+              <td class="num">18</td>
+              <td class="num">10</td>
+              <td class="num">19</td>
+              <td class="num">8</td>
+              <td class="num">10</td>
+              <td class="num">7</td>
+              <td class="num">19</td>
+              <td class="num">18</td>
+              <td class="num">14</td>
+              <td class="num total-col">123</td>
+              <td class="num conc-col">12,95%</td>
+            </tr>
+            <tr class="total-row">
+              <td class="item">TOTAL DE NIPs</td>
+              <td class="num">88</td>
+              <td class="num">85</td>
+              <td class="num">108</td>
+              <td class="num">80</td>
+              <td class="num">102</td>
+              <td class="num">90</td>
+              <td class="num">135</td>
+              <td class="num">119</td>
+              <td class="num">143</td>
+              <td class="num total-col">950</td>
+              <td class="num conc-col">100,00%</td>
+            </tr>
+            <tr class="percent-row">
+              <td class="item">% do Total Ano</td>
+              <td class="num">9,26%</td>
+              <td class="num">8,95%</td>
+              <td class="num">11,37%</td>
+              <td class="num">8,42%</td>
+              <td class="num">10,74%</td>
+              <td class="num">9,47%</td>
+              <td class="num">14,21%</td>
+              <td class="num">12,53%</td>
+              <td class="num">15,05%</td>
+              <td class="num total-col">100,00%</td>
+              <td class="num conc-col">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conc-callout">
+        <div class="conc-side dominant">
+          <div class="conc-icon"><i data-lucide="crown"></i></div>
+          <div class="conc-body">
+            <div class="conc-label">Concentração dominante</div>
+            <div class="conc-value">Assistencial <small>· 827 NIPs</small></div>
+            <div class="conc-pct">87,05% do total anual</div>
+          </div>
+        </div>
+        <div class="conc-divider">
+          <i data-lucide="plus"></i>
+        </div>
+        <div class="conc-side">
+          <div class="conc-icon"><i data-lucide="file-warning"></i></div>
+          <div class="conc-body">
+            <div class="conc-label">Demanda complementar</div>
+            <div class="conc-value">Não Assistencial <small>· 123 NIPs</small></div>
+            <div class="conc-pct">12,95% do total anual</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TABELA COMPARATIVA DETALHADA ================= -->
+  <section class="section">
+    <div class="section-head">
+      <h2><i data-lucide="table-2"></i> Tabela Comparativa Detalhada</h2>
+      <span class="rule"></span>
+      <span class="hint">Variação absoluta e percentual por categoria</span>
+    </div>
+
+    <div class="card">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-key="causas"><i data-lucide="stethoscope"></i> Causas Top 5</button>
+        <button class="tab" data-key="objeto"><i data-lucide="activity"></i> Objeto Geral</button>
+        <button class="tab" data-key="cidades"><i data-lucide="map-pin"></i> Cidades</button>
+        <button class="tab" data-key="areas"><i data-lucide="building-2"></i> Áreas</button>
+        <button class="tab" data-key="subcausas"><i data-lucide="layers"></i> Subcausas</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th id="th-item">Categoria / Item</th>
+              <th class="num">agosto</th>
+              <th class="num">setembro</th>
+              <th class="num">Var. Abs.</th>
+              <th class="num">Var. %</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="table-foot">
+        <i data-lucide="info"></i>
+        <span id="tableNote">Valores em quantidade de NIPs. Itens com “—” indicam ausência de registro no mês comparado, não sendo possível calcular a variação percentual.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INSIGHTS ================= -->
+  <section class="section">
+    <div class="section-head">
+      <h2><i data-lucide="lightbulb"></i> Análise & Insights Qualitativos</h2>
+      <span class="rule"></span>
+      <span class="hint">Clique em cada card para expandir o diagnóstico</span>
+    </div>
+
+    <div class="insights-grid" id="insights"><!-- renderizado via JS --></div>
+  </section>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <span><strong>Relatório Setorial GEPAS</strong> · Análise Comparativa de Demandas NIP</span>
+  <span>Fonte: base interna GEPAS · Período: agosto vs. Setembro</span>
+</footer>
+
+<script>
+/* ============================================================
+   REGISTRA PLUGIN DE RÓTULOS
+   ============================================================ */
+Chart.register(ChartDataLabels);
+
+/* ============================================================
+   DADOS
+   ============================================================ */
+const MES_A = 'Agosto';
+const MES_B = 'Setembro';
+
+const DATASETS = {
+  causas: [
+    { item:'Rol de Procedimentos',                 a:41, b:52 },
+    { item:'Regras para Acesso aos Atendimentos',  a:18, b:21 },
+    { item:'Prazos Máximos para Atendimento',      a:20, b:24 },
+    { item:'Mensalidades ou Outras Cobranças',     a:9,  b:9  },
+    { item:'Rede de Atendimento',                  a:15, b:21 }
+  ],
+  objeto: [
+    { item:'Cirurgia',    a:19, b:24 },
+    { item:'Consulta',    a:21, b:29 },
+    { item:'Terapia',     a:11, b:23 },
+    { item:'Financeiro',  a:19, b:10 },
+    { item:'Medicamento', a:13, b:13 }
+  ],
+  cidades: [
+    { item:'Anápolis/GO',                a:12, b:6  },
+    { item:'Aparecida de Goiânia/GO',    a:7,  b:7  },
+    { item:'Brasília/DF',                a:8,  b:8  },
+    { item:'Goiânia/GO',                 a:68, b:91 },
+    { item:'Itaberaí/GO',                a:3,  b:3  }
+  ],
+  areas: [
+    { item:'COARA', a:52, b:76 },
+    { item:'CODIN', a:9,  b:17 },
+    { item:'COARR', a:0,  b:8  },
+    { item:'COFIN', a:9,  b:0  },
+    { item:'COGAT', a:38, b:34 },
+    { item:'CONEG', a:6,  b:3  }
+  ],
+  subcausas: [
+    { item:'Negativa de Cobertura',    a:42, b:55 },
+    { item:'Insuficiência de Rede',    a:33, b:28 },
+    { item:'Solicitação de Reembolso', a:6,  b:9  },
+    { item:'Prazo de Autorização',     a:2,  b:5  }
+  ]
+};
+
+const TABLE_TITLES = {
+  causas:    'Causa',
+  objeto:    'Objeto',
+  cidades:   'Cidade',
+  areas:     'Área',
+  subcausas: 'Subcausa'
+};
+
+const PLANOS = [
+  { nome:'IPASGO SAÚDE BÁSICO',   qtd:73 },
+  { nome:'IPASGO SAÚDE ESPECIAL', qtd:52 },
+  { nome:'IPASGO SAÚDE CERRADO',  qtd:10 },
+  { nome:'IPASGO SAÚDE FAMÍLIA',  qtd:8  }
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const fmtInt = n => n.toLocaleString('pt-BR');
+const fmtPct = v => (v > 0 ? '+' : '') + v.toFixed(1).replace('.', ',') + '%';
+const fmtAbs = v => (v > 0 ? '+' : '') + fmtInt(v);
+
+function variation(a, b){
+  if (a === 0 || b === 0) return null;
+  return ((b - a) / a) * 100;
+}
+
+/* ============================================================
+   GRÁFICO 1 — BARRAS CAUSAS TOP 5
+   ============================================================ */
+const shortLabel = {
+  'Rol de Procedimentos':'ROL de Procedimentos',
+  'Regras para Acesso aos Atendimentos':'Regras de Acesso',
+  'Prazos Máximos para Atendimento':'Prazos Máximos',
+  'Mensalidades ou Outras Cobranças':'Mensalidades',
+  'Rede de Atendimento':'Rede de Atendimento'
+};
+
+new Chart(document.getElementById('chartCausas'), {
+  type:'bar',
+  data:{
+    labels: DATASETS.causas.map(c => shortLabel[c.item] || c.item),
+    datasets:[
+      {
+        label: MES_A,
+        data: DATASETS.causas.map(c => c.a),
+        backgroundColor:'#95d5b2',
+        hoverBackgroundColor:'#b7e4c7',
+        borderRadius:7,
+        borderSkipped:false,
+        maxBarThickness:44
+      },
+      {
+        label: MES_B,
+        data: DATASETS.causas.map(c => c.b),
+        backgroundColor:'#2d6a4f',
+        hoverBackgroundColor:'#1b4332',
+        borderRadius:7,
+        borderSkipped:false,
+        maxBarThickness:44
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    layout:{ padding:{ top:26, right:8 } },
+    animation:{ duration:900, easing:'easeOutQuart' },
+    plugins:{
+      legend:{
+        position:'top',
+        align:'end',
+        labels:{
+          usePointStyle:true,
+          pointStyle:'circle',
+          boxWidth:8,
+          boxHeight:8,
+          padding:18,
+          font:{ size:12, weight:'600', family:'Inter' },
+          color:'#3a5a48'
+        }
+      },
+      tooltip:{
+        backgroundColor:'#1b4332',
+        titleFont:{ size:12.5, weight:'700', family:'Inter' },
+        bodyFont:{ size:12.5, family:'Inter' },
+        padding:12,
+        cornerRadius:10,
+        displayColors:true,
+        usePointStyle:true,
+        callbacks:{
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} NIPs`
+        }
+      },
+      datalabels:{
+        anchor:'end',
+        align:'top',
+        offset:2,
+        clamp:true,
+        color: ctx => ctx.datasetIndex === 0 ? '#2d6a4f' : '#1b4332',
+        font:{ size:11.5, weight:'800', family:'Inter' },
+        formatter: v => v,
+        textShadowColor:'rgba(255,255,255,.85)',
+        textShadowBlur:4
+      }
+    },
+    scales:{
+      y:{
+        beginAtZero:true,
+        grid:{ color:'#eaf3ec', drawBorder:false },
+        ticks:{ color:'#6b8a79', font:{ size:11.5, family:'Inter' }, stepSize:10 },
+        border:{ display:false },
+        grace:'8%'
+      },
+      x:{
+        grid:{ display:false },
+        ticks:{ color:'#3a5a48', font:{ size:11.5, weight:'600', family:'Inter' } },
+        border:{ display:false }
+      }
+    }
+  }
+});
+
+/* ============================================================
+   GRÁFICO 2 — ROSCA OBJETO GERAL (SETEMBRO)
+   ============================================================ */
+new Chart(document.getElementById('chartObjeto'), {
+  type:'doughnut',
+  data:{
+    labels: DATASETS.objeto.map(o => o.item),
+    datasets:[{
+      data: DATASETS.objeto.map(o => o.b),
+      backgroundColor:['#1b4332','#2d6a4f','#40916c','#74c69d','#b7e4c7'],
+      hoverBackgroundColor:['#0f2419','#1b4332','#2d6a4f','#52b788','#95d5b2'],
+      borderColor:'#ffffff',
+      borderWidth:3,
+      hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    cutout:'58%',
+    layout:{ padding:{ top:6, bottom:6 } },
+    animation:{ animateRotate:true, duration:1000 },
+    plugins:{
+      legend:{
+        position:'bottom',
+        labels:{
+          usePointStyle:true,
+          pointStyle:'circle',
+          boxWidth:8,
+          boxHeight:8,
+          padding:12,
+          font:{ size:11.5, weight:'600', family:'Inter' },
+          color:'#3a5a48'
+        }
+      },
+      tooltip:{
+        backgroundColor:'#1b4332',
+        padding:12,
+        cornerRadius:10,
+        titleFont:{ size:12.5, weight:'700', family:'Inter' },
+        bodyFont:{ size:12.5, family:'Inter' },
+        callbacks:{
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((s,v) => s + v, 0);
+            const pct = ((ctx.parsed / total) * 100).toFixed(1).replace('.', ',');
+            return ` ${ctx.label}: ${ctx.parsed} NIPs (${pct}%)`;
+          }
+        }
+      },
+      datalabels:{
+        color:'#ffffff',
+        font:{ size:11, weight:'800', family:'Inter' },
+        textAlign:'center',
+        textShadowColor:'rgba(0,0,0,.45)',
+        textShadowBlur:5,
+        formatter: (value, ctx) => {
+          const total = ctx.dataset.data.reduce((s,v) => s + v, 0);
+          const pct = ((value / total) * 100).toFixed(1).replace('.', ',');
+          return `${value}\n${pct}%`;
+        },
+        display: ctx => {
+          const total = ctx.dataset.data.reduce((s,v) => s + v, 0);
+          const share = (ctx.dataset.data[ctx.dataIndex] / total) * 100;
+          return share >= 6;
+        }
+      }
+    }
+  }
+});
+
+/* ============================================================
+   GRÁFICO 3 — EVOLUÇÃO MENSAL (LINHA)
+   ============================================================ */
+new Chart(document.getElementById('chartEvolucao'), {
+  type:'line',
+  data:{
+    labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set'],
+    datasets:[
+      {
+        label:'Assistencial',
+        data:[70,75,89,72,92,83,116,101,129],
+        borderColor:'#2d6a4f',
+        backgroundColor:'rgba(45,106,79,.10)',
+        borderWidth:2.6,
+        tension:.38,
+        fill:true,
+        pointBackgroundColor:'#2d6a4f',
+        pointBorderColor:'#ffffff',
+        pointBorderWidth:2,
+        pointRadius:4,
+        pointHoverRadius:6
+      },
+      {
+        label:'Não Assistencial',
+        data:[18,10,19,8,10,7,19,18,14],
+        borderColor:'#95d5b2',
+        backgroundColor:'rgba(149,213,178,.16)',
+        borderWidth:2.6,
+        tension:.38,
+        fill:true,
+        pointBackgroundColor:'#95d5b2',
+        pointBorderColor:'#ffffff',
+        pointBorderWidth:2,
+        pointRadius:4,
+        pointHoverRadius:6
+      },
+      {
+        label:'Total',
+        data:[88,85,108,80,102,90,135,119,143],
+        borderColor:'#1b4332',
+        borderWidth:2.2,
+        borderDash:[6,5],
+        tension:.38,
+        fill:false,
+        pointBackgroundColor:'#1b4332',
+        pointBorderColor:'#ffffff',
+        pointBorderWidth:2,
+        pointRadius:3.5,
+        pointHoverRadius:5.5
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    layout:{ padding:{ top:30, right:14, left:4 } },
+    animation:{ duration:1000, easing:'easeOutQuart' },
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{
+        position:'top',
+        align:'end',
+        labels:{
+          usePointStyle:true,
+          pointStyle:'circle',
+          boxWidth:8,
+          boxHeight:8,
+          padding:16,
+          font:{ size:11.5, weight:'600', family:'Inter' },
+          color:'#3a5a48'
+        }
+      },
+      tooltip:{
+        backgroundColor:'#1b4332',
+        padding:12,
+        cornerRadius:10,
+        titleFont:{ size:12.5, weight:'700', family:'Inter' },
+        bodyFont:{ size:12.5, family:'Inter' },
+        callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} NIPs` }
+      },
+      datalabels:{
+        align: (ctx) => {
+          if (ctx.datasetIndex === 2) return 'top';
+          if (ctx.datasetIndex === 0) return 'bottom';
+          return 'top';
+        },
+        offset: (ctx) => ctx.datasetIndex === 2 ? 6 : 5,
+        clamp:true,
+        color: (ctx) => ctx.dataset.borderColor,
+        font:{ size:9.5, weight:'800', family:'Inter' },
+        formatter: v => v,
+        backgroundColor:'rgba(255,255,255,.85)',
+        borderRadius:4,
+        padding:{ top:1, bottom:1, left:3, right:3 },
+        display: true
+      }
+    },
+    scales:{
+      y:{
+        beginAtZero:true,
+        grid:{ color:'#eaf3ec', drawBorder:false },
+        ticks:{ color:'#6b8a79', font:{ size:11.5, family:'Inter' } },
+        border:{ display:false },
+        grace:'12%'
+      },
+      x:{
+        grid:{ display:false },
+        ticks:{ color:'#6b8a79', font:{ size:11.5, weight:'600', family:'Inter' } },
+        border:{ display:false }
+      }
+    }
+  }
+});
+
+/* ============================================================
+   GRÁFICO 4 — ÁREAS DEMANDADAS (BARRA HORIZONTAL)
+   ============================================================ */
+new Chart(document.getElementById('chartAreas'), {
+  type:'bar',
+  data:{
+    labels: DATASETS.areas.map(a => a.item),
+    datasets:[
+      {
+        label: MES_A,
+        data: DATASETS.areas.map(a => a.a),
+        backgroundColor:'#b7e4c7',
+        hoverBackgroundColor:'#95d5b2',
+        borderRadius:6,
+        borderSkipped:false,
+        maxBarThickness:16
+      },
+      {
+        label: MES_B,
+        data: DATASETS.areas.map(a => a.b),
+        backgroundColor:'#2d6a4f',
+        hoverBackgroundColor:'#1b4332',
+        borderRadius:6,
+        borderSkipped:false,
+        maxBarThickness:16
+      }
+    ]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    layout:{ padding:{ right:36, left:4, top:6 } },
+    animation:{ duration:900, easing:'easeOutQuart' },
+    plugins:{
+      legend:{
+        position:'top',
+        align:'end',
+        labels:{
+          usePointStyle:true,
+          pointStyle:'circle',
+          boxWidth:8,
+          boxHeight:8,
+          padding:16,
+          font:{ size:11.5, weight:'600', family:'Inter' },
+          color:'#3a5a48'
+        }
+      },
+      tooltip:{
+        backgroundColor:'#1b4332',
+        padding:12,
+        cornerRadius:10,
+        titleFont:{ size:12.5, weight:'700', family:'Inter' },
+        bodyFont:{ size:12.5, family:'Inter' },
+        callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x} NIPs` }
+      },
+      datalabels:{
+        anchor:'end',
+        align:'right',
+        offset:4,
+        clamp:true,
+        color: ctx => ctx.datasetIndex === 0 ? '#40916c' : '#1b4332',
+        font:{ size:11, weight:'800', family:'Inter' },
+        formatter: v => v,
+        display: ctx => ctx.dataset.data[ctx.dataIndex] > 0
+      }
+    },
+    scales:{
+      x:{
+        beginAtZero:true,
+        grid:{ color:'#eaf3ec', drawBorder:false },
+        ticks:{ color:'#6b8a79', font:{ size:11, family:'Inter' } },
+        border:{ display:false },
+        grace:'14%'
+      },
+      y:{
+        grid:{ display:false },
+        ticks:{ color:'#3a5a48', font:{ size:11.5, weight:'700', family:'Inter' } },
+        border:{ display:false }
+      }
+    }
+  }
+});
+
+/* ============================================================
+   PLANOS DEMANDADOS — BARRAS CSS
+   ============================================================ */
+(function renderPlanos(){
+  const max = Math.max(...PLANOS.map(p => p.qtd));
+  const total = PLANOS.reduce((s,p) => s + p.qtd, 0);
+  const wrap = document.getElementById('planosList');
+
+  wrap.innerHTML = PLANOS.map((p, i) => {
+    const pct = ((p.qtd / total) * 100).toFixed(1).replace('.', ',');
+    const w   = (p.qtd / max) * 100;
+    return `
+      <div class="plano-row">
+        <div class="plano-top">
+          <span class="plano-name">${p.nome}</span>
+          <span class="plano-qty">${p.qtd}<small>${pct}%</small></span>
+        </div>
+        <div class="plano-track">
+          <div class="plano-fill ${i % 2 ? 'alt' : ''}" data-w="${w}"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  requestAnimationFrame(() => {
+    wrap.querySelectorAll('.plano-fill').forEach(el => {
+      setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 120);
+    });
+  });
+})();
+
+/* ============================================================
+   TABELA COMPARATIVA
+   ============================================================ */
+const tbody   = document.getElementById('tableBody');
+const thItem  = document.getElementById('th-item');
+const tableNote = document.getElementById('tableNote');
+
+function statusBadge(a, b){
+  const v = variation(a, b);
+  if (v === null) {
+    return `<span class="badge na"><i data-lucide="minus"></i>N/D</span>`;
+  }
+  if (v > 0.05)  return `<span class="badge up"><i data-lucide="arrow-up-right"></i>Aumento</span>`;
+  if (v < -0.05) return `<span class="badge down"><i data-lucide="arrow-down-right"></i>Queda</span>`;
+  return `<span class="badge flat"><i data-lucide="equal"></i>Estável</span>`;
+}
+
+function deltaCell(a, b, type){
+  const v = variation(a, b);
+  if (v === null) return `<span class="delta flat">—</span>`;
+  const abs = b - a;
+  if (type === 'abs') {
+    const cls = abs > 0 ? 'up' : abs < 0 ? 'down' : 'flat';
+    return `<span class="delta ${cls}">${fmtAbs(abs)}</span>`;
+  }
+  const cls = v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
+  const icon = v > 0 ? 'arrow-up-right' : v < 0 ? 'arrow-down-right' : 'equal';
+  return `<span class="delta ${cls}"><i data-lucide="${icon}"></i>${fmtPct(v)}</span>`;
+}
+
+function renderTable(key){
+  const rows = DATASETS[key];
+  thItem.textContent = TABLE_TITLES[key];
+
+  tbody.innerHTML = rows.map(r => {
+    const a = r.a, b = r.b;
+    const aTxt = a === 0 ? '—' : fmtInt(a);
+    const bTxt = b === 0 ? '—' : fmtInt(b);
+    return `
+      <tr>
+        <td class="item">${r.item}</td>
+        <td class="num m1">${aTxt}</td>
+        <td class="num m2">${bTxt}</td>
+        <td class="num">${deltaCell(a, b, 'abs')}</td>
+        <td class="num">${deltaCell(a, b, 'pct')}</td>
+        <td class="center">${statusBadge(a, b)}</td>
+      </tr>`;
+  }).join('');
+
+  const notes = {
+    causas:    'Causas raiz mais recorrentes nas NIPs do período. Volume total das Top 5: 103 em agosto e 127 em setembro.',
+    objeto:    'Classificação por objeto geral da demanda. Terapia (+109,1%) e Financeiro (−47,4%) são os extremos do comparativo.',
+    cidades:   'Goiânia/GO concentra cerca de 80% das demandas das cinco cidades monitoradas em setembro.',
+    areas:     'Áreas internas demandadas. COARR passou a registrar demandas em setembro; COFIN não figurou no período.',
+    subcausas: 'Detalhamento das subcausas. “Negativa de Cobertura” (42 → 55) é o principal vetor de crescimento.'
+  };
+  tableNote.textContent = notes[key] || '';
+
+  if (window.lucide) lucide.createIcons();
+}
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(btn.dataset.key);
+});
+
+renderTable('causas');
+
+/* ============================================================
+   INSIGHTS QUALITATIVOS
+   ============================================================ */
+const INSIGHTS = [
+  {
+    icon:'sparkles',
+    tone:'up',
+    title:'Terapia — salto de +109,1%',
+    sub:'11 → 23 demandas · objeto de maior crescimento relativo',
+    tag:'+109,1%',
+    tagClass:'up',
+    body:`
+      <p>O objeto <strong>Terapia</strong> praticamente dobrou no comparativo, saltando de 11 para 23 demandas (+12 registros). É o maior crescimento percentual de todo o relatório.</p>
+      <p>O movimento é coerente com o avanço da subcausa <strong>Negativa de Cobertura</strong> (42 → 55), que concentra a maior parte das recusas em terapias multidisciplinares — ABA, fonoaudiologia, terapia ocupacional e psicologia.</p>
+      <p><strong>Ação recomendada:</strong> revisão dos critérios de autorização, ampliação do rol de terapeutas credenciados e reforço na orientação prévia ao beneficiário, reduzindo judicialização e retrabalho da área regulatória.</p>
+      <div class="insight-meta">
+        <span class="pill">Objeto Geral</span>
+        <span class="pill warn">Prioridade alta</span>
+      </div>`
+  },
+  {
+    icon:'network',
+    tone:'up',
+    title:'Rede de Atendimento — maior alta entre as Top 5 causas',
+    sub:'15 → 21 demandas · +40,0%',
+    tag:'+40,0%',
+    tagClass:'up',
+    body:`
+      <p>A causa <strong>Rede de Atendimento</strong> registrou o maior crescimento percentual entre as cinco principais causas (+40,0%), passando de 15 para 21 demandas.</p>
+      <p>Vale notar que, em agosto, <strong>12 das 15 NIPs</strong> dessa causa foram julgadas procedentes (80%); em setembro, apenas <strong>6 das 21</strong> (28,6%) — uma mudança relevante no perfil de decisão.</p>
+      <p><strong>Ação recomendada:</strong> mapear vazios de credenciamento em Goiânia e região metropolitana e priorizar contratualização nas especialidades com maior índice de negativa por ausência de prestador.</p>
+      <div class="insight-meta">
+        <span class="pill">Causa Raiz</span>
+        <span class="pill warn">Prioridade alta</span>
+      </div>`
+  },
+  {
+    icon:'file-text',
+    tone:'up',
+    title:'ROL de Procedimentos — maior volume absoluto',
+    sub:'41 → 52 demandas · +26,8%',
+    tag:'+26,8%',
+    tagClass:'up',
+    body:`
+      <p>O <strong>ROL de Procedimentos</strong> segue como a causa mais demandada do relatório, com 52 registros em setembro — um incremento de 11 NIPs frente a agosto.</p>
+      <p>No detalhamento por análise preliminar, houve queda relativa de <strong>procedentes</strong> (20 → 17 ) e <strong>improcedentes</strong> (15 → 14). O ponto de atenção é a <strong>ausência de julgamentos parciais</strong> em setembro, contra 6 em agosto.</p>
+      <p><strong>Ação recomendada:</strong> revisão das negativas automatizadas, capacitação das equipes de autorização e implantação de segunda opinião técnica antes da emissão da negativa formal.</p>
+      <div class="insight-meta">
+        <span class="pill">Causa Raiz</span>
+        <span class="pill">Volume crítico</span>
+      </div>`
+  },
+  {
+    icon:'map-pin',
+    tone:'up',
+    title:'Goiânia/GO — concentração de 80% da demanda',
+    sub:'68 → 91 demandas · +33,8%',
+    tag:'+33,8%',
+    tagClass:'up',
+    body:`
+      <p>A capital concentra aproximadamente <strong>80% de toda a demanda</strong> registrada em setembro (91 dos 113 registros das cinco cidades monitoradas).</p>
+      <p>O crescimento de +23 demandas reforça a necessidade de dimensionamento de equipe e monitoramento do tempo de resposta na praça. Em contrapartida, <strong>Anápolis/GO</strong> apresentou queda de 50% (12 → 6), abrindo espaço para avaliação de descentralização do atendimento.</p>
+      <p>Brasília/DF e Aparecida de Goiânia/GO permaneceram estáveis, com 8 e 7 demandas respectivamente.</p>
+      <div class="insight-meta">
+        <span class="pill">Distribuição Geográfica</span>
+        <span class="pill">Concentração</span>
+      </div>`
+  },
+  {
+    icon:'trending-down',
+    tone:'down',
+    title:'Financeiro — única queda expressiva do período',
+    sub:'19 → 10 demandas · −47,4%',
+    tag:'−47,4%',
+    tagClass:'down',
+    body:`
+      <p>O objeto <strong>Financeiro</strong> foi o único a apresentar queda relevante no comparativo, reduzindo 9 demandas (−47,4%).</p>
+      <p>O resultado sugere efeito positivo das ações de comunicação sobre reajustes e cobranças, somado à estabilização da causa <strong>Mensalidades ou Outras Cobranças</strong> (9 → 9, estável).</p>
+      <p><strong>Ação recomendada:</strong> manter o monitoramento para consolidar a tendência e documentar as práticas que geraram o recuo, replicando-as em outras frentes.</p>
+      <div class="insight-meta">
+        <span class="pill">Objeto Geral</span>
+        <span class="pill">Tendência positiva</span>
+      </div>`
+  },
+  {
+    icon:'building-2',
+    tone:'up',
+    title:'COARA — 55% de toda a demanda das áreas',
+    sub:'52 → 76 demandas · +46,2%',
+    tag:'+46,2%',
+    tagClass:'up',
+    body:`
+      <p>A área <strong>COARA</strong> segue como principal porta de entrada das demandas, com 76 registros em setembro — o equivalente a <strong>55% do total das áreas monitoradas</strong>.</p>
+      <p>O crescimento de +24 demandas indica sobrecarga operacional progressiva. Em paralelo, <strong>CODIN</strong> praticamente dobrou (9 → 17, +88,9%), enquanto <strong>COGAT</strong> recuou 10,5% (38 → 34) e <strong>CONEG</strong> caiu 50% (6 → 3).</p>
+      <p><strong>Ação recomendada:</strong> avaliar redistribuição de fluxo entre COARA, COGAT e a recém-acionada COARR (8 demandas em setembro).</p>
+      <div class="insight-meta">
+        <span class="pill">Áreas Internas</span>
+        <span class="pill warn">Sobrecarga</span>
+      </div>`
+  },
+  {
+    icon:'split',
+    tone:'neutral',
+    title:'Assistencial concentra 87,05% de toda a demanda anual',
+    sub:'827 NIPs assistenciais vs. 123 não assistenciais',
+    tag:'87,05%',
+    tagClass:'up',
+    body:`
+      <p>A natureza <strong>Assistencial</strong> concentra <strong>87,05% de toda a demanda</strong> do período (827 de 950 NIPs), enquanto a <strong>Não Assistencial</strong> responde por apenas 12,95% (123 NIPs).</p>
+      <p>A concentração é ainda mais evidente quando observamos o mês de setembro: dos 143 NIPs registrados, <strong>129 são assistenciais (90,2%)</strong> — o maior patamar do ano.</p>
+      <p>Essa concentração reforça a necessidade de priorizar recursos de <strong>auditoria assistencial, regulação e credenciamento</strong>, uma vez que é nessa ponta que a pressão de demanda está de fato concentrada.</p>
+      <div class="insight-meta">
+        <span class="pill">Natureza</span>
+        <span class="pill warn">Concentração crítica</span>
+      </div>`
+  },
+  {
+    icon:'gavel',
+    tone:'up',
+    title:'Mudança no perfil das decisões em setembro',
+    sub:'Procedentes caem de 58 → 40 no Top 5',
+    tag:'Perfil decisório',
+    tagClass:'flat',
+    body:`
+      <p>No comparativo entre os meses, o total de decisões <strong>procedentes</strong> nas Top 5 causas caiu de <strong>58 para 40</strong> (−31,0%), enquanto os <strong>improcedentes</strong> variaram de 37 para 32 e os <strong>parciais</strong> desapareceram no período (8 → 0).</p>
+      <p>O dado sugere <strong>maior seletividade nas decisões</strong> em setembro, com menos NIPs sendo integralmente acolhidas. As causas <strong>Rede de Atendimento</strong> (80% → 28,6% de procedência) e <strong>Regras de Acesso</strong> (50% → 19,0%) são os casos mais expressivos dessa mudança.</p>
+      <p><strong>Ação recomendada:</strong> investigar se a mudança reflete aperfeiçoamento técnico das decisões ou endurecimento da política de autorização, ajustando comunicação e capacitação conforme o caso.</p>
+      <div class="insight-meta">
+        <span class="pill">Decisões</span>
+        <span class="pill warn">Monitorar</span>
+      </div>`
+  },
+  {
+    icon:'clock',
+    tone:'up',
+    title:'Prazo de Autorização — subcausa mais que dobrou',
+    sub:'2 → 5 demandas · +150,0%',
+    tag:'+150,0%',
+    tagClass:'up',
+    body:`
+      <p>Embora com volume absoluto pequeno, a subcausa <strong>Prazo de Autorização</strong> mais que dobrou no comparativo (2 → 5).</p>
+      <p>É um indicador sensível à percepção de qualidade do beneficiário e um dos principais gatilhos de reclamação e insatisfação. Também houve alta em <strong>Solicitação de Reembolso</strong> (6 → 9, +50%).</p>
+      <p><strong>Ação recomendada:</strong> acompanhamento mensal dedicado e revisão dos SLAs de autorização, especialmente nas especialidades com maior volume.</p>
+      <div class="insight-meta">
+        <span class="pill">Subcausa</span>
+        <span class="pill warn">Monitorar</span>
+      </div>`
+  }
+];
+
+const insightsWrap = document.getElementById('insights');
+
+insightsWrap.innerHTML = INSIGHTS.map(ins => `
+  <article class="insight">
+    <button class="insight-head" type="button" aria-expanded="false">
+      <span class="insight-icon ${ins.tone === 'down' ? 'down' : ins.tone === 'neutral' ? 'neutral' : ''}">
+        <i data-lucide="${ins.icon}"></i>
+      </span>
+      <span class="insight-titles">
+        <span class="insight-title">${ins.title}</span>
+        <span class="insight-sub">${ins.sub}</span>
+      </span>
+      <span class="insight-tag ${ins.tagClass}">${ins.tag}</span>
+      <i data-lucide="chevron-down" class="chev"></i>
+    </button>
+    <div class="insight-body">
+      <div>
+        <div class="insight-content">${ins.body}</div>
+      </div>
+    </div>
+  </article>
+`).join('');
+
+insightsWrap.addEventListener('click', e => {
+  const head = e.target.closest('.insight-head');
+  if (!head) return;
+  const card = head.closest('.insight');
+  const isOpen = card.classList.toggle('open');
+  head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+});
+
+const firstInsight = insightsWrap.querySelector('.insight');
+if (firstInsight) {
+  firstInsight.classList.add('open');
+  firstInsight.querySelector('.insight-head').setAttribute('aria-expanded','true');
+}
+
+/* ============================================================
+   ÍCONES
+   ============================================================ */
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
